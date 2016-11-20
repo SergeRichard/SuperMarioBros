@@ -18,18 +18,18 @@ public class CameraController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (followTarget) {
+		if (followTarget && target.transform.position.x >= transform.position.x) {
 			targetPosition = new Vector3 (target.transform.position.x, transform.position.y, transform.position.z);
 
 			if (target.GetComponent<SpriteRenderer> ().flipX == false) {
 				targetPosition = new Vector3 (targetPosition.x + followAhead, targetPosition.y, targetPosition.z);
-			} else {
-				targetPosition = new Vector3 (targetPosition.x - followAhead, targetPosition.y, targetPosition.z);
-			}
+
+				transform.position = Vector3.Lerp (transform.position, targetPosition, smoothing * Time.deltaTime);
+			} 
 
 			//transform.position = targetPosition;
 
-			transform.position = Vector3.Lerp (transform.position, targetPosition, smoothing * Time.deltaTime);
+			//transform.position = Vector3.Lerp (transform.position, targetPosition, smoothing * Time.deltaTime);
 		}
 	}
 
