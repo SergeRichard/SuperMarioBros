@@ -4,7 +4,13 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
 	public float moveSpeed;
+	public float additionalSpeedOnRun;
+
 	private float activeMoveSpeed;
+	private float currentAdditionalSpeedOnRun;
+
+	public float additionalJumpSpeed;
+	private float currentAdditionalJumpSpeed;
 
 	public bool canMove;
 
@@ -52,6 +58,9 @@ public class PlayerController : MonoBehaviour {
 
 		activeMoveSpeed = moveSpeed;
 
+		currentAdditionalSpeedOnRun = 0;
+		currentAdditionalJumpSpeed = 0;
+
 		canMove = true;
 	}
 	
@@ -61,9 +70,9 @@ public class PlayerController : MonoBehaviour {
 
 		if (knockBackCounter <= 0 && canMove) {
 			if (onPlatform) {
-				activeMoveSpeed = moveSpeed * onPlatformSpeedModifier;
+				activeMoveSpeed = (moveSpeed + currentAdditionalSpeedOnRun) * onPlatformSpeedModifier;
 			} else {
-				activeMoveSpeed = moveSpeed;
+				activeMoveSpeed = moveSpeed + currentAdditionalSpeedOnRun;
 			}
 			if (Input.GetAxisRaw ("Horizontal") > 0f) {
 				myRigidbody.velocity = new Vector3 (activeMoveSpeed, myRigidbody.velocity.y, 0f);
@@ -75,10 +84,19 @@ public class PlayerController : MonoBehaviour {
 				myRigidbody.velocity = new Vector3 (0f, myRigidbody.velocity.y, 0f);
 			}
 			if (Input.GetButtonDown ("Jump") && isGrounded) {
-				myRigidbody.velocity = new Vector3 (myRigidbody.velocity.x, jumpSpeed, 0f);
+				myRigidbody.velocity = new Vector3 (myRigidbody.velocity.x, jumpSpeed + currentAdditionalJumpSpeed, 0f);
 				JumpAudioSource.Play ();
 			}
-
+			if (Input.GetButtonDown ("Run") && isGrounded) {
+				Debug.Log ("Pressing on run buttton!");
+				currentAdditionalSpeedOnRun = additionalSpeedOnRun;
+				currentAdditionalJumpSpeed = additionalJumpSpeed;
+			}
+			if (Input.GetButtonUp ("Run")) {
+				Debug.Log ("slow down!");
+				currentAdditionalSpeedOnRun = 0;
+				currentAdditionalJumpSpeed = 0;
+			}
 			theLevelManager.invincible = false;
 		}
 
@@ -120,7 +138,6 @@ public class PlayerController : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.tag == "KillPlane") {
 			theLevelManager.healthCount = 0;
-			theLevelManager.UpdateHealthMeter ();
 			//theLevelManager.Respawn ();
 
 		}

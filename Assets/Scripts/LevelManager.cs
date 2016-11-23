@@ -13,14 +13,6 @@ public class LevelManager : MonoBehaviour {
 
 	public Text coinText;
 
-	public Image heart1;
-	public Image heart2;
-	public Image heart3;
-
-	public Sprite heartFull;
-	public Sprite heartHalf;
-	public Sprite heartEmpty;
-
 	public int maxHealth;
 	public int healthCount;
 
@@ -29,8 +21,6 @@ public class LevelManager : MonoBehaviour {
 	private ResetOnRespawn[] objectsToReset;
 
 	public bool invincible;
-
-	public Text livesText;
 
 	public int startingLives;
 	public int currentLives;
@@ -50,11 +40,11 @@ public class LevelManager : MonoBehaviour {
 
 		objectsToReset = FindObjectsOfType<ResetOnRespawn> ();
 
-		if (PlayerPrefs.HasKey ("CoinCount")) {
-			coinCount = PlayerPrefs.GetInt ("CoinCount");
-		}
+//		if (PlayerPrefs.HasKey ("CoinCount")) {
+//			coinCount = PlayerPrefs.GetInt ("CoinCount");
+//		}
 
-		coinText.text = "Coins: " + coinCount;
+		coinText.text = "00" /*+ coinCount*/;
 
 		if (PlayerPrefs.HasKey ("PlayerLives")) {
 			currentLives = PlayerPrefs.GetInt ("PlayerLives");
@@ -62,7 +52,6 @@ public class LevelManager : MonoBehaviour {
 		} else {
 			currentLives = startingLives;
 		}
-		livesText.text = "Lives x " + currentLives;
 
 	}
 	
@@ -74,7 +63,6 @@ public class LevelManager : MonoBehaviour {
 		}
 		if (coinBonusLifeCount >= bonusLifeThreshold) {
 			currentLives++;
-			livesText.text = "Lives x " + currentLives;
 			coinBonusLifeCount -= bonusLifeThreshold;
 		}
 	}
@@ -82,7 +70,6 @@ public class LevelManager : MonoBehaviour {
 	public void Respawn()
 	{
 		currentLives--;
-		livesText.text = "Lives x " + currentLives;
 		if (currentLives > 0) {
 			StartCoroutine (RespawnCo ());	
 		} else {
@@ -103,7 +90,6 @@ public class LevelManager : MonoBehaviour {
 
 		healthCount = maxHealth;
 		respawning = false;
-		UpdateHealthMeter ();
 
 		coinCount = 0;
 		coinBonusLifeCount = 0;
@@ -128,7 +114,6 @@ public class LevelManager : MonoBehaviour {
 	public void HurtPlayer(int damageToTake) {
 		if (!invincible) {
 			healthCount -= damageToTake;
-			UpdateHealthMeter ();
 
 			thePlayer.KnockBack ();
 			thePlayer.HurtAudioSource.Play ();
@@ -141,52 +126,11 @@ public class LevelManager : MonoBehaviour {
 		}
 		coinAudioSource.Play ();
 
-		UpdateHealthMeter ();
 	}
-	public void UpdateHealthMeter () {
-		switch (healthCount) {
-		case 6:
-			heart1.sprite = heartFull;
-			heart2.sprite = heartFull;
-			heart3.sprite = heartFull;
-			return;
-		case 5:
-			heart1.sprite = heartFull;
-			heart2.sprite = heartFull;
-			heart3.sprite = heartHalf;
-			return;
-		case 4:
-			heart1.sprite = heartFull;
-			heart2.sprite = heartFull;
-			heart3.sprite = heartEmpty;
-			return;
-		case 3:
-			heart1.sprite = heartFull;
-			heart2.sprite = heartHalf;
-			heart3.sprite = heartEmpty;
-			return;
-		case 2:
-			heart1.sprite = heartFull;
-			heart2.sprite = heartEmpty;
-			heart3.sprite = heartEmpty;
-			return;
-		case 1:
-			heart1.sprite = heartHalf;
-			heart2.sprite = heartEmpty;
-			heart3.sprite = heartEmpty;
-			return;
-		default:
-			heart1.sprite = heartEmpty;
-			heart2.sprite = heartEmpty;
-			heart3.sprite = heartEmpty;
-			return;
-		}
 
-	}
 	public void AddLives(int livesToAdd) {
 		currentLives += livesToAdd;
 
-		livesText.text = "Lives x " + currentLives;
 		coinAudioSource.Play ();
 	}
 }
