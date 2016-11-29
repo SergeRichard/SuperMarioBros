@@ -11,6 +11,8 @@ public class QuestionMark : MonoBehaviour {
 
 	private bool hitLeft = true;
 
+	public Mushroom mushroom;
+
 	// Use this for initialization
 	void Start () {
 		theAnimator = GetComponent<Animator> ();
@@ -31,5 +33,10 @@ public class QuestionMark : MonoBehaviour {
 			hitLeft = false;
 		}
 
+	}
+	public void HitMushroomAnimDone() {
+		mushroom.transform.parent = null;
+		mushroom.canMove = true;
+		GetComponent<Animator> ().enabled = false;
 	}
 }
