@@ -10,6 +10,7 @@ public class Mushroom : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		myRigidbody = GetComponent<Rigidbody2D> ();
+		myRigidbody.velocity = Vector2.zero;
 	}
 
 	// Update is called once per frame

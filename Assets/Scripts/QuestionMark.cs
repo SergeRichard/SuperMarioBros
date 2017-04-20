@@ -5,6 +5,8 @@ public class QuestionMark : MonoBehaviour {
 
 	Animator theAnimator;
 
+
+
 	public enum Prize {Coin, MushroomOrFlower}
 
 	public Prize prize = Prize.Coin; 
@@ -35,8 +37,7 @@ public class QuestionMark : MonoBehaviour {
 
 	}
 	public void HitMushroomAnimDone() {
-		mushroom.transform.parent = null;
-		mushroom.canMove = true;
-		GetComponent<Animator> ().enabled = false;
+		mushroom.gameObject.GetComponent<SpriteRenderer> ().enabled = false;
+
 	}
 }
