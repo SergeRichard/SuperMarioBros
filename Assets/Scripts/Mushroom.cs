@@ -15,11 +15,11 @@ public class Mushroom : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (canMove) {
+		//if (canMove) {
 
 			myRigidbody.velocity = new Vector3 (moveSpeed, myRigidbody.velocity.y, 0f);
 
-		}
+		//}
 	}
 //	void OnBecameVisible() {
 //		canMove = true;
@@ -31,7 +31,7 @@ public class Mushroom : MonoBehaviour {
 			gameObject.SetActive(false);
 
 		}
-		if (canMove)
+		//if (canMove)
 			moveSpeed *= -1f;
 	}
 	void OnEnable() {

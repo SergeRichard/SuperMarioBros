@@ -5,8 +5,6 @@ public class QuestionMark : MonoBehaviour {
 
 	Animator theAnimator;
 
-
-
 	public enum Prize {Coin, MushroomOrFlower}
 
 	public Prize prize = Prize.Coin; 
@@ -14,6 +12,8 @@ public class QuestionMark : MonoBehaviour {
 	private bool hitLeft = true;
 
 	public Mushroom mushroom;
+
+	public GameObject mushroomPrefab;
 
 	// Use this for initialization
 	void Start () {
@@ -34,10 +34,12 @@ public class QuestionMark : MonoBehaviour {
 			}
 			hitLeft = false;
 		}
-
 	}
-	public void HitMushroomAnimDone() {
-		mushroom.gameObject.GetComponent<SpriteRenderer> ().enabled = false;
+	void OnMushroomAnimationEnd() {
+		Transform mushTransform = GetComponent<Transform> ();
+
+		GameObject mushroomInstance = (GameObject)Instantiate (mushroomPrefab, (mushTransform.position - new Vector3(0,-0.8f,0)), Quaternion.identity);
+		mushroomInstance.GetComponent<Transform> ().parent = null;
 
 	}
 }
