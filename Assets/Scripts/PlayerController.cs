@@ -47,6 +47,9 @@ public class PlayerController : MonoBehaviour {
 	private bool onPlatform;
 	public float onPlatformSpeedModifier;
 
+	public Sprite smallMario;
+	public Sprite bigMario;
+
 	// Use this for initialization
 	void Start () {
 		myRigidbody = GetComponent<Rigidbody2D> ();
@@ -144,7 +147,9 @@ public class PlayerController : MonoBehaviour {
 		if (other.tag == "Checkpoint") {
 			respawnPosition = other.transform.position;
 		}
-
+		if (other.tag == "Mushroom") {
+			Destroy (other.gameObject);
+		}
 	}
 	void OnCollisionEnter2D(Collision2D other) {
 		if (other.gameObject.tag == "MovingPlatform") {
