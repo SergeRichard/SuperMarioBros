@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour {
 	public float moveSpeed;
 	public float additionalSpeedOnRun;
 
+	public SpriteRenderer PlayerGrowShrinkRenderer;
+
 	private float activeMoveSpeed;
 	private float currentAdditionalSpeedOnRun;
 
@@ -25,6 +27,8 @@ public class PlayerController : MonoBehaviour {
 
 	public bool isGrounded;
 
+	bool PauseControl = false;
+
 	private Animator myAnim;
 	private SpriteRenderer mySpriteRenderer;
 
@@ -43,15 +47,16 @@ public class PlayerController : MonoBehaviour {
 
 	public AudioSource JumpAudioSource;
 	public AudioSource HurtAudioSource;
+	public AudioSource PowerupAudioSource;
 
 	private bool onPlatform;
 	public float onPlatformSpeedModifier;
 
-	public Sprite smallMario;
-	public Sprite bigMario;
-
 	BoxCollider2D BoxCollider;
 	CircleCollider2D CircleCollider;
+
+	Vector2 saveVelocity = new Vector2 ();
+	//Vector2 saveAngularVelocity = new Vector2 ();
 
 	public enum PlayerStates
 	{
@@ -137,64 +142,68 @@ public class PlayerController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		isGrounded = Physics2D.OverlapCircle (groundCheck.position, groundCheckRadius, whatIsGround);
+		if (!PauseControl) {
+			isGrounded = Physics2D.OverlapCircle (groundCheck.position, groundCheckRadius, whatIsGround);
 
-		if (knockBackCounter <= 0 && canMove) {
-			if (onPlatform) {
-				activeMoveSpeed = (moveSpeed + currentAdditionalSpeedOnRun) * onPlatformSpeedModifier;
+			if (knockBackCounter <= 0 && canMove) {
+				if (onPlatform) {
+					activeMoveSpeed = (moveSpeed + currentAdditionalSpeedOnRun) * onPlatformSpeedModifier;
+				} else {
+					activeMoveSpeed = moveSpeed + currentAdditionalSpeedOnRun;
+				}
+				if (Input.GetAxisRaw ("Horizontal") > 0f) {
+					myRigidbody.velocity = new Vector3 (activeMoveSpeed, myRigidbody.velocity.y, 0f);
+					mySpriteRenderer.flipX = false;
+					PlayerGrowShrinkRenderer.flipX = false;
+				} else if (Input.GetAxisRaw ("Horizontal") < 0f) {
+					myRigidbody.velocity = new Vector3 (-activeMoveSpeed, myRigidbody.velocity.y, 0f);
+					mySpriteRenderer.flipX = true;
+					PlayerGrowShrinkRenderer.flipX = true;
+				} else {
+					myRigidbody.velocity = new Vector3 (0f, myRigidbody.velocity.y, 0f);
+				}
+				if (Input.GetButtonDown ("Jump") && isGrounded) {
+					myRigidbody.velocity = new Vector3 (myRigidbody.velocity.x, jumpSpeed + currentAdditionalJumpSpeed, 0f);
+					JumpAudioSource.Play ();
+				}
+				if (Input.GetButtonDown ("Run") && isGrounded) {
+					Debug.Log ("Pressing on run buttton!");
+					currentAdditionalSpeedOnRun = additionalSpeedOnRun;
+					currentAdditionalJumpSpeed = additionalJumpSpeed;
+				}
+				if (Input.GetButtonUp ("Run")) {
+					Debug.Log ("slow down!");
+					currentAdditionalSpeedOnRun = 0;
+					currentAdditionalJumpSpeed = 0;
+				}
+				theLevelManager.invincible = false;
+			}
+
+			if (knockBackCounter > 0) {
+				knockBackCounter -= Time.deltaTime;
+
+				if (mySpriteRenderer.flipX)
+					myRigidbody.velocity = new Vector3 (knockBackForce, knockBackForce / 2, 0f);
+				else
+					myRigidbody.velocity = new Vector3 (-knockBackForce, knockBackForce / 2, 0f);
+			}
+
+			if (invincibilityCounter > 0) {
+				invincibilityCounter -= Time.deltaTime;
+
 			} else {
-				activeMoveSpeed = moveSpeed + currentAdditionalSpeedOnRun;
+				theLevelManager.invincible = false;
 			}
-			if (Input.GetAxisRaw ("Horizontal") > 0f) {
-				myRigidbody.velocity = new Vector3 (activeMoveSpeed, myRigidbody.velocity.y, 0f);
-				mySpriteRenderer.flipX = false;
-			} else if (Input.GetAxisRaw ("Horizontal") < 0f) {
-				myRigidbody.velocity = new Vector3 (-activeMoveSpeed, myRigidbody.velocity.y, 0f);
-				mySpriteRenderer.flipX = true;
+
+			myAnim.SetFloat ("Speed", Mathf.Abs (myRigidbody.velocity.x));
+			myAnim.SetBool ("Grounded", isGrounded);
+
+			if (myRigidbody.velocity.y < 0) {
+				stompBox.SetActive (true);
+
 			} else {
-				myRigidbody.velocity = new Vector3 (0f, myRigidbody.velocity.y, 0f);
+				stompBox.SetActive (false);
 			}
-			if (Input.GetButtonDown ("Jump") && isGrounded) {
-				myRigidbody.velocity = new Vector3 (myRigidbody.velocity.x, jumpSpeed + currentAdditionalJumpSpeed, 0f);
-				JumpAudioSource.Play ();
-			}
-			if (Input.GetButtonDown ("Run") && isGrounded) {
-				Debug.Log ("Pressing on run buttton!");
-				currentAdditionalSpeedOnRun = additionalSpeedOnRun;
-				currentAdditionalJumpSpeed = additionalJumpSpeed;
-			}
-			if (Input.GetButtonUp ("Run")) {
-				Debug.Log ("slow down!");
-				currentAdditionalSpeedOnRun = 0;
-				currentAdditionalJumpSpeed = 0;
-			}
-			theLevelManager.invincible = false;
-		}
-
-		if (knockBackCounter > 0) {
-			knockBackCounter -= Time.deltaTime;
-
-			if (mySpriteRenderer.flipX) 
-				myRigidbody.velocity = new Vector3 (knockBackForce, knockBackForce/2, 0f);
-			else
-				myRigidbody.velocity = new Vector3 (-knockBackForce, knockBackForce/2, 0f);
-		}
-
-		if (invincibilityCounter > 0) {
-			invincibilityCounter -= Time.deltaTime;
-
-		} else {
-			theLevelManager.invincible = false;
-		}
-
-		myAnim.SetFloat ("Speed", Mathf.Abs(myRigidbody.velocity.x));
-		myAnim.SetBool ("Grounded", isGrounded);
-
-		if (myRigidbody.velocity.y < 0) {
-			stompBox.SetActive (true);
-
-		} else {
-			stompBox.SetActive (false);
 		}
 	}
 	public void KnockBack() {
@@ -219,8 +228,31 @@ public class PlayerController : MonoBehaviour {
 			Destroy (other.gameObject);
 
 			PlayerState = PlayerStates.Big;
-			TransformMarioToNewSize ();
+
+			PauseMarioWhileGrowOrShrink ();
+
+			//TransformMarioToNewSize ();
+			myAnim.Play ("GrowPlayerIdle");
 		}
+	}
+	void PauseMarioWhileGrowOrShrink() {
+		PowerupAudioSource.Play ();
+		PauseControl = true;
+		saveVelocity = myRigidbody.velocity;
+		//saveAngularVelocity = myRigidbody.angularVelocity;
+		myRigidbody.velocity = Vector2.zero;
+		myRigidbody.isKinematic = true;
+	}
+	void OnMarioGrowFinish() {
+		TransformMarioToNewSize ();
+		UnpauseMario ();
+		PauseControl = false;
+	}
+	void UnpauseMario() {
+		myRigidbody.isKinematic = false;
+		myRigidbody.velocity = saveVelocity;
+		//myRigidbody.angularVelocity = saveAngularVelocity;
+		myRigidbody.WakeUp ();
 	}
 	void OnCollisionEnter2D(Collision2D other) {
 		if (other.gameObject.tag == "MovingPlatform") {
@@ -232,7 +264,11 @@ public class PlayerController : MonoBehaviour {
 			Destroy (other.gameObject);
 
 			PlayerState = PlayerStates.Big;
-			TransformMarioToNewSize ();
+
+			PauseMarioWhileGrowOrShrink ();
+
+			//TransformMarioToNewSize ();
+			myAnim.Play ("GrowPlayerIdle");
 		}
 	}
 	void OnCollisionExit2D(Collision2D other) {
