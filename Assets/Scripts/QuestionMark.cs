@@ -15,6 +15,8 @@ public class QuestionMark : MonoBehaviour {
 
 	public GameObject mushroomPrefab;
 
+	public GameObject flowerPrefab;
+
 	public AudioSource PowerupAppearsAudioSource;
 
 	// Use this for initialization
@@ -49,6 +51,9 @@ public class QuestionMark : MonoBehaviour {
 
 	}
 	void OnFlowerAnimationEnd() {
+		Transform theTransform = GetComponent<Transform> ();
 
+		GameObject flowerInstance = (GameObject)Instantiate (flowerPrefab, (theTransform.position - new Vector3(0,-0.74f,0)), Quaternion.identity);
+		flowerInstance.GetComponent<Transform> ().parent = null;
 	}
 }

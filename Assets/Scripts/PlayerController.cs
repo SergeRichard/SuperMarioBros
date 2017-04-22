@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour {
 		currentAdditionalSpeedOnRun = 0;
 		currentAdditionalJumpSpeed = 0;
 
-		PlayerState = PlayerStates.Big;
+		PlayerState = PlayerStates.Small;
 
 		TransformMarioToNewSize ();
 
