@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour {
 		currentAdditionalSpeedOnRun = 0;
 		currentAdditionalJumpSpeed = 0;
 
-		PlayerState = PlayerStates.Small;
+		PlayerState = PlayerStates.Big;
 
 		TransformMarioToNewSize ();
 
@@ -135,7 +135,24 @@ public class PlayerController : MonoBehaviour {
 			CircleCollider.radius = 0.28f;
 			break;
 		case PlayerStates.BigFire:
+			myAnim.Play ("FirePlayerIdle");
 
+			v.x = 0;
+			v.y = 0.02f;
+
+			BoxCollider.offset = v;
+
+			v.x = 0.58f;
+			v.y = 1.25f;
+
+			BoxCollider.size = v;
+
+			v.x = 0f;
+			v.y = -0.38f;
+
+			CircleCollider.offset = v;
+
+			CircleCollider.radius = 0.28f;
 			break;
 
 		}
@@ -237,6 +254,15 @@ public class PlayerController : MonoBehaviour {
 
 			//TransformMarioToNewSize ();
 			myAnim.Play ("GrowPlayerIdle");
+		}
+		if (other.tag == "Flower") {
+			Destroy (other.gameObject);
+
+			PlayerState = PlayerStates.BigFire;
+
+			PauseMarioWhileGrowOrShrink ();
+
+			myAnim.Play ("TransformToFireMario");
 		}
 	}
 	void PauseMarioWhileGrowOrShrink() {
