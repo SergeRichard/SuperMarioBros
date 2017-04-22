@@ -15,6 +15,8 @@ public class QuestionMark : MonoBehaviour {
 
 	public GameObject mushroomPrefab;
 
+	public AudioSource PowerupAppearsAudioSource;
+
 	// Use this for initialization
 	void Start () {
 		theAnimator = GetComponent<Animator> ();
@@ -29,8 +31,12 @@ public class QuestionMark : MonoBehaviour {
 			if (prize == Prize.Coin) {
 				theAnimator.SetTrigger ("Hit");
 			} else {
-				theAnimator.SetTrigger ("HitMushroom");
-
+				if (PlayerController.PlayerState == PlayerController.PlayerStates.Small)
+					theAnimator.SetTrigger ("HitMushroom");
+				else
+					theAnimator.SetTrigger ("HitFlower");
+				
+				PowerupAppearsAudioSource.Play ();
 			}
 			hitLeft = false;
 		}
@@ -40,6 +46,9 @@ public class QuestionMark : MonoBehaviour {
 
 		GameObject mushroomInstance = (GameObject)Instantiate (mushroomPrefab, (mushTransform.position - new Vector3(0,-0.8f,0)), Quaternion.identity);
 		mushroomInstance.GetComponent<Transform> ().parent = null;
+
+	}
+	void OnFlowerAnimationEnd() {
 
 	}
 }

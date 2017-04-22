@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour {
 	private float invincibilityCounter;
 
 	public AudioSource JumpAudioSource;
+	public AudioSource JumpBigAudioSource;
 	public AudioSource HurtAudioSource;
 	public AudioSource PowerupAudioSource;
 
@@ -63,7 +64,7 @@ public class PlayerController : MonoBehaviour {
 		Small, Big, BigFire
 	};
 
-	public PlayerStates PlayerState;
+	public static PlayerStates PlayerState;
 
 	// Use this for initialization
 	void Start () {
@@ -82,7 +83,7 @@ public class PlayerController : MonoBehaviour {
 		currentAdditionalSpeedOnRun = 0;
 		currentAdditionalJumpSpeed = 0;
 
-		PlayerState = PlayerStates.Small;
+		PlayerState = PlayerStates.Big;
 
 		TransformMarioToNewSize ();
 
@@ -164,7 +165,10 @@ public class PlayerController : MonoBehaviour {
 				}
 				if (Input.GetButtonDown ("Jump") && isGrounded) {
 					myRigidbody.velocity = new Vector3 (myRigidbody.velocity.x, jumpSpeed + currentAdditionalJumpSpeed, 0f);
-					JumpAudioSource.Play ();
+					if (PlayerState == PlayerStates.Small)
+						JumpAudioSource.Play ();
+					else
+						JumpBigAudioSource.Play ();
 				}
 				if (Input.GetButtonDown ("Run") && isGrounded) {
 					Debug.Log ("Pressing on run buttton!");
