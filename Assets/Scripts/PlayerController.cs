@@ -50,6 +50,16 @@ public class PlayerController : MonoBehaviour {
 	public Sprite smallMario;
 	public Sprite bigMario;
 
+	BoxCollider2D BoxCollider;
+	CircleCollider2D CircleCollider;
+
+	public enum PlayerStates
+	{
+		Small, Big, BigFire
+	};
+
+	public PlayerStates PlayerState;
+
 	// Use this for initialization
 	void Start () {
 		myRigidbody = GetComponent<Rigidbody2D> ();
@@ -59,14 +69,72 @@ public class PlayerController : MonoBehaviour {
 		respawnPosition = transform.position;
 		theLevelManager = FindObjectOfType<LevelManager> ();
 
+		BoxCollider = GetComponent<BoxCollider2D> ();
+		CircleCollider = GetComponent<CircleCollider2D> ();
+
 		activeMoveSpeed = moveSpeed;
 
 		currentAdditionalSpeedOnRun = 0;
 		currentAdditionalJumpSpeed = 0;
 
+		PlayerState = PlayerStates.Small;
+
+		TransformMarioToNewSize ();
+
 		canMove = true;
 	}
-	
+
+	public void TransformMarioToNewSize() {
+		Vector2 v = new Vector2 ();
+
+		switch (PlayerState) {
+		case PlayerStates.Small:
+			myAnim.Play ("PlayerIdle");
+
+			v.x = 0;
+			v.y = 0.03f;
+
+			BoxCollider.offset = v;
+
+			v.x = 0.5f;
+			v.y = 0.59f;
+
+			BoxCollider.size = v;
+
+			v.x = 0;
+			v.y = -0.09f;
+
+			CircleCollider.offset = v;
+
+			CircleCollider.radius = 0.23f;
+			break;
+		case PlayerStates.Big:
+			myAnim.Play ("BigPlayerIdle");
+
+			v.x = 0;
+			v.y = 0.02f;
+
+			BoxCollider.offset = v;
+
+			v.x = 0.58f;
+			v.y = 1.25f;
+
+			BoxCollider.size = v;
+
+			v.x = 0f;
+			v.y = -0.38f;
+
+			CircleCollider.offset = v;
+
+			CircleCollider.radius = 0.28f;
+			break;
+		case PlayerStates.BigFire:
+
+			break;
+
+		}
+	}
+
 	// Update is called once per frame
 	void Update () {
 		isGrounded = Physics2D.OverlapCircle (groundCheck.position, groundCheckRadius, whatIsGround);
@@ -149,12 +217,22 @@ public class PlayerController : MonoBehaviour {
 		}
 		if (other.tag == "Mushroom") {
 			Destroy (other.gameObject);
+
+			PlayerState = PlayerStates.Big;
+			TransformMarioToNewSize ();
 		}
 	}
 	void OnCollisionEnter2D(Collision2D other) {
 		if (other.gameObject.tag == "MovingPlatform") {
 			transform.parent = other.transform;
 			onPlatform = true;
+		}
+		if (other.gameObject.tag == "Mushroom") {
+			Debug.Log ("in collision");
+			Destroy (other.gameObject);
+
+			PlayerState = PlayerStates.Big;
+			TransformMarioToNewSize ();
 		}
 	}
 	void OnCollisionExit2D(Collision2D other) {
