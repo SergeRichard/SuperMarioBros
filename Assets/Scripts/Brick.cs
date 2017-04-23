@@ -4,6 +4,7 @@ using System.Collections;
 public class Brick : MonoBehaviour {
 
 	Animator theAnimator;
+	public AudioSource BumpAudioSource; 
 
 	// Use this for initialization
 	void Start () {
@@ -18,6 +19,7 @@ public class Brick : MonoBehaviour {
 		if (other.tag == "Player" /*&& theAnimator.GetBool("HitAnimation") == false*/) {
 			theAnimator.Play ("Idle");
 			theAnimator.SetBool ("HitAnimation",true);
+			BumpAudioSource.Play ();
 		}
 
 	}

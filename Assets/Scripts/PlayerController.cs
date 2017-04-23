@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
 	public float additionalSpeedOnRun;
 
 	public SpriteRenderer PlayerGrowShrinkRenderer;
+	public SpriteRenderer TransformToFireMarioRenderer;
 
 	private float activeMoveSpeed;
 	private float currentAdditionalSpeedOnRun;
@@ -83,7 +84,7 @@ public class PlayerController : MonoBehaviour {
 		currentAdditionalSpeedOnRun = 0;
 		currentAdditionalJumpSpeed = 0;
 
-		PlayerState = PlayerStates.Big;
+		PlayerState = PlayerStates.Small;
 
 		TransformMarioToNewSize ();
 
@@ -173,10 +174,12 @@ public class PlayerController : MonoBehaviour {
 					myRigidbody.velocity = new Vector3 (activeMoveSpeed, myRigidbody.velocity.y, 0f);
 					mySpriteRenderer.flipX = false;
 					PlayerGrowShrinkRenderer.flipX = false;
+					TransformToFireMarioRenderer.flipX = false;
 				} else if (Input.GetAxisRaw ("Horizontal") < 0f) {
 					myRigidbody.velocity = new Vector3 (-activeMoveSpeed, myRigidbody.velocity.y, 0f);
 					mySpriteRenderer.flipX = true;
 					PlayerGrowShrinkRenderer.flipX = true;
+					TransformToFireMarioRenderer.flipX = true;
 				} else {
 					myRigidbody.velocity = new Vector3 (0f, myRigidbody.velocity.y, 0f);
 				}

@@ -19,6 +19,9 @@ public class QuestionMark : MonoBehaviour {
 
 	public AudioSource PowerupAppearsAudioSource;
 
+	public AudioSource BumpAudioSource;
+	public AudioSource CoinAudioSource;
+
 	// Use this for initialization
 	void Start () {
 		theAnimator = GetComponent<Animator> ();
@@ -29,9 +32,14 @@ public class QuestionMark : MonoBehaviour {
 		
 	}
 	void OnTriggerEnter2D(Collider2D other) {
+		if (other.tag == "Player") {
+			BumpAudioSource.Play ();
+
+		}
 		if (other.tag == "Player" && hitLeft) {
 			if (prize == Prize.Coin) {
 				theAnimator.SetTrigger ("Hit");
+				CoinAudioSource.Play ();
 			} else {
 				if (PlayerController.PlayerState == PlayerController.PlayerStates.Small)
 					theAnimator.SetTrigger ("HitMushroom");
