@@ -8,6 +8,7 @@ public class Brick : MonoBehaviour {
 	public SpriteRenderer Block;
 	public AudioSource BumpAudioSource; 
 	public AudioSource CoinSound;
+	public AudioSource BreakBlockAudioSource;
 	public int coinAmount;
 	public bool isMetalFace;
 	bool triggered = false;
@@ -40,6 +41,12 @@ public class Brick : MonoBehaviour {
 		BumpAudioSource.Play ();
 		if (other.tag == "Player" && triggered == false) {
 			theAnimator.SetBool ("HitAnimation",true);
+			if (PlayerController.PlayerState != PlayerController.PlayerStates.Small) {
+				theAnimator.SetBool ("MarioBig", true);
+			} else {
+				theAnimator.SetBool ("MarioBig", false);
+			}
+
 			triggered = true;
 			if (!(theAnimator.GetBool ("HadCoins") == true && coinAmount <= 0)) {				
 				theAnimator.Play ("Idle");
@@ -70,5 +77,12 @@ public class Brick : MonoBehaviour {
 	public void HitCoinsDone() {
 		theAnimator.SetBool ("HitAnimation", false);
 		triggered = false;
+	}
+	public void OnBrickBreak() {
+		BreakBlockAudioSource.Play ();
+		BoxCollider2D[] colliders = GetComponents<BoxCollider2D>();
+		foreach (BoxCollider2D c in colliders) {
+			c.enabled = false;
+		}
 	}
 }
