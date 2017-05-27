@@ -8,6 +8,7 @@ public class StompEnemy : MonoBehaviour {
 	public float bounceForce;
 
 	public GameObject deathExplosion;
+	public GameObject goombaSplat;
 
 	// Use this for initialization
 	void Start () {
@@ -24,10 +25,19 @@ public class StompEnemy : MonoBehaviour {
 			//Destroy (other.gameObject);
 			other.gameObject.SetActive(false);
 
-			Instantiate (deathExplosion, other.transform.position, other.transform.rotation);
+			Instantiate (deathExplosion,  other.transform.position, other.transform.rotation);
 
 			playerRigidbody.velocity = new Vector3 (playerRigidbody.velocity.x, bounceForce, 0f);
 		}
+		if (other.tag == "Goomba") {
+			other.gameObject.SetActive(false);
 
+			Vector3 vec = other.transform.position;
+			vec.y += -.2f;
+
+			Instantiate (goombaSplat, vec, other.transform.rotation);
+
+			playerRigidbody.velocity = new Vector3 (playerRigidbody.velocity.x, bounceForce, 0f);
+		}
 	}
 }
