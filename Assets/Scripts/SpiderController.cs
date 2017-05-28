@@ -17,6 +17,7 @@ public class SpiderController : MonoBehaviour {
 	void Update () {
 		if (canMove) {
 			myRigidbody.velocity = new Vector3 (-moveSpeed, myRigidbody.velocity.y, 0f);
+
 		}
 	}
 	void OnBecameVisible() {
@@ -26,8 +27,10 @@ public class SpiderController : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.tag == "KillPlane") {
 			//Destroy (gameObject);
-			gameObject.SetActive(false);
+			gameObject.SetActive (false);
 
+		} else {
+			moveSpeed *= -1;
 		}
 
 	}
