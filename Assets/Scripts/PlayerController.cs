@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour {
 	private LevelManager theLevelManager;
 
 	public GameObject stompBox;
+	public GameObject stompBoxBig;
 
 	public float knockBackForce;
 	public float knockBackLength;
@@ -223,10 +224,18 @@ public class PlayerController : MonoBehaviour {
 			myAnim.SetBool ("Grounded", isGrounded);
 
 			if (myRigidbody.velocity.y < 0) {
-				stompBox.SetActive (true);
+				if (PlayerState == PlayerStates.Small) {
+					stompBox.SetActive (true);
+				} else {
+					stompBoxBig.SetActive (true);
+				}
 
 			} else {
-				stompBox.SetActive (false);
+				if (PlayerState == PlayerStates.Small) {
+					stompBox.SetActive (false);
+				} else {
+					stompBoxBig.SetActive (false);
+				}
 			}
 		}
 	}
