@@ -10,6 +10,8 @@ public class StompEnemy : MonoBehaviour {
 	public GameObject deathExplosion;
 	public GameObject goombaSplat;
 
+	public AudioSource goombaStompSound;
+
 	// Use this for initialization
 	void Start () {
 		playerRigidbody = transform.parent.GetComponent<Rigidbody2D> ();
@@ -38,6 +40,8 @@ public class StompEnemy : MonoBehaviour {
 			Instantiate (goombaSplat, vec, other.transform.rotation);
 
 			playerRigidbody.velocity = new Vector3 (playerRigidbody.velocity.x, bounceForce, 0f);
+
+			goombaStompSound.Play ();
 		}
 	}
 }
