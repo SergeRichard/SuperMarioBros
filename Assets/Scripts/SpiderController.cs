@@ -5,19 +5,27 @@ public class SpiderController : MonoBehaviour {
 
 	public float moveSpeed;
 	public bool canMove;
+	public Animator myAnimator;
 
 	private Rigidbody2D myRigidbody;
 
 	// Use this for initialization
 	void Start () {
 		myRigidbody = GetComponent<Rigidbody2D> ();
+		myAnimator = GetComponent<Animator> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (canMove) {
+		if (canMove && PlayerController.PauseAllAnimations == false) {
+			if (myAnimator.enabled == false) {
+				myAnimator.enabled = true;
+			}
 			myRigidbody.velocity = new Vector3 (-moveSpeed, myRigidbody.velocity.y, 0f);
-
+		}
+		if (PlayerController.PauseAllAnimations == true) {
+			myRigidbody.velocity = Vector2.zero;
+			myAnimator.enabled = false;
 		}
 	}
 	void OnBecameVisible() {
@@ -29,7 +37,7 @@ public class SpiderController : MonoBehaviour {
 			//Destroy (gameObject);
 			gameObject.SetActive (false);
 
-		} else {
+		} else if (other.tag != "Flower" || other.tag != "Mushroom") {
 			moveSpeed *= -1;
 		}
 

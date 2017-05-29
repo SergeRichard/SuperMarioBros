@@ -52,6 +52,8 @@ public class PlayerController : MonoBehaviour {
 	public AudioSource HurtAudioSource;
 	public AudioSource PowerupAudioSource;
 
+	public GameObject PlayerDies;
+
 	private bool onPlatform;
 	public float onPlatformSpeedModifier;
 
@@ -60,6 +62,8 @@ public class PlayerController : MonoBehaviour {
 
 	Vector2 saveVelocity = new Vector2 ();
 	//Vector2 saveAngularVelocity = new Vector2 ();
+
+	public static bool PauseAllAnimations = false;
 
 	public enum PlayerStates
 	{
@@ -244,6 +248,13 @@ public class PlayerController : MonoBehaviour {
 		invincibilityCounter = invincibilityLength;
 		theLevelManager.invincible = true;
 	}
+	public void PlayerKilled() {
+		Instantiate (PlayerDies, gameObject.transform.position, gameObject.transform.rotation);
+		PauseAllAnimations = true;
+		theLevelManager.levelMusic.Stop ();
+		PauseControl = true;
+		gameObject.SetActive (false);
+	}
 	public void OnEnable() {
 		knockBackCounter = 0;
 
@@ -278,6 +289,7 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 	void PauseMarioWhileGrowOrShrink() {
+		PauseAllAnimations = true;
 		PowerupAudioSource.Play ();
 		PauseControl = true;
 		saveVelocity = myRigidbody.velocity;
@@ -286,6 +298,7 @@ public class PlayerController : MonoBehaviour {
 		myRigidbody.isKinematic = true;
 	}
 	void OnMarioGrowFinish() {
+		PauseAllAnimations = false;
 		TransformMarioToNewSize ();
 		UnpauseMario ();
 		PauseControl = false;
