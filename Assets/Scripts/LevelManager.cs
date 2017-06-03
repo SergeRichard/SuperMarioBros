@@ -113,10 +113,10 @@ public class LevelManager : MonoBehaviour {
 
 	public void HurtPlayer(int damageToTake) {
 		if (!invincible) {
-			healthCount -= damageToTake;
+			//healthCount -= damageToTake;
 
 			thePlayer.PlayerKilled ();
-			thePlayer.HurtAudioSource.Play ();
+			//thePlayer.HurtAudioSource.Play ();
 		}
 	}
 	public void GiveHealth(int healthToGive) {
