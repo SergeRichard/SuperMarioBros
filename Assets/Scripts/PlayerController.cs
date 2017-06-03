@@ -311,6 +311,8 @@ public class PlayerController : MonoBehaviour {
 		//saveAngularVelocity = myRigidbody.angularVelocity;
 		myRigidbody.velocity = Vector2.zero;
 		myRigidbody.isKinematic = true;
+
+		myAnim.Play ("ShrinkPlayer");
 	}
 	void OnMarioGrowFinish() {
 		PauseAllAnimations = false;
