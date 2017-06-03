@@ -300,7 +300,7 @@ public class PlayerController : MonoBehaviour {
 		PauseControl = true;
 		saveVelocity = myRigidbody.velocity;
 		//saveAngularVelocity = myRigidbody.angularVelocity;
-		myRigidbody.velocity = Vector2.zero;
+		myRigidbody.velocity = Vector3.zero;
 		myRigidbody.isKinematic = true;
 	}
 	void PauseMarioWhileShrink() {
@@ -309,7 +309,7 @@ public class PlayerController : MonoBehaviour {
 		PauseControl = true;
 		saveVelocity = myRigidbody.velocity;
 		//saveAngularVelocity = myRigidbody.angularVelocity;
-		myRigidbody.velocity = Vector2.zero;
+		myRigidbody.velocity = Vector3.zero;
 		myRigidbody.isKinematic = true;
 
 		myAnim.Play ("ShrinkPlayer");
@@ -319,6 +319,14 @@ public class PlayerController : MonoBehaviour {
 		TransformMarioToNewSize ();
 		UnpauseMario ();
 		PauseControl = false;
+	}
+	void OnMarioShrinkFinish() {
+		PauseAllAnimations = false;
+		PlayerState = PlayerStates.Small;
+		TransformMarioToNewSize ();
+		UnpauseMario ();
+		PauseControl = false;
+		theLevelManager.invincible = true;
 	}
 	void UnpauseMario() {
 		myRigidbody.isKinematic = false;
