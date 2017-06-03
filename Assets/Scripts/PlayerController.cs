@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour {
 	public AudioSource JumpBigAudioSource;
 	public AudioSource HurtAudioSource;
 	public AudioSource PowerupAudioSource;
+	public AudioSource ShrinkOrPipeAudioSource;
 
 	public GameObject PlayerDies;
 
@@ -248,12 +249,17 @@ public class PlayerController : MonoBehaviour {
 		invincibilityCounter = invincibilityLength;
 		theLevelManager.invincible = true;
 	}
-	public void PlayerKilled() {
-		Instantiate (PlayerDies, gameObject.transform.position, gameObject.transform.rotation);
-		PauseAllAnimations = true;
-		theLevelManager.levelMusic.Stop ();
-		PauseControl = true;
-		gameObject.SetActive (false);
+	public void PlayerEnemyCollision() {
+		if (PlayerState == PlayerStates.Small) {
+			Instantiate (PlayerDies, gameObject.transform.position, gameObject.transform.rotation);
+			PauseAllAnimations = true;
+			theLevelManager.levelMusic.Stop ();
+			PauseControl = true;
+			gameObject.SetActive (false);
+		} else {
+			PauseMarioWhileShrink ();
+
+		}
 	}
 	public void OnEnable() {
 		knockBackCounter = 0;
@@ -273,7 +279,7 @@ public class PlayerController : MonoBehaviour {
 
 			PlayerState = PlayerStates.Big;
 
-			PauseMarioWhileGrowOrShrink ();
+			PauseMarioWhileGrow ();
 
 			//TransformMarioToNewSize ();
 			myAnim.Play ("GrowPlayerIdle");
@@ -283,14 +289,23 @@ public class PlayerController : MonoBehaviour {
 
 			PlayerState = PlayerStates.BigFire;
 
-			PauseMarioWhileGrowOrShrink ();
+			PauseMarioWhileGrow ();
 
 			myAnim.Play ("TransformToFireMario");
 		}
 	}
-	void PauseMarioWhileGrowOrShrink() {
+	void PauseMarioWhileGrow() {
 		PauseAllAnimations = true;
 		PowerupAudioSource.Play ();
+		PauseControl = true;
+		saveVelocity = myRigidbody.velocity;
+		//saveAngularVelocity = myRigidbody.angularVelocity;
+		myRigidbody.velocity = Vector2.zero;
+		myRigidbody.isKinematic = true;
+	}
+	void PauseMarioWhileShrink() {
+		PauseAllAnimations = true;
+		ShrinkOrPipeAudioSource.Play ();
 		PauseControl = true;
 		saveVelocity = myRigidbody.velocity;
 		//saveAngularVelocity = myRigidbody.angularVelocity;
@@ -320,7 +335,7 @@ public class PlayerController : MonoBehaviour {
 
 			PlayerState = PlayerStates.Big;
 
-			PauseMarioWhileGrowOrShrink ();
+			PauseMarioWhileGrow ();
 
 			//TransformMarioToNewSize ();
 			myAnim.Play ("GrowPlayerIdle");

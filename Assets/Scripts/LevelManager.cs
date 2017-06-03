@@ -115,7 +115,7 @@ public class LevelManager : MonoBehaviour {
 		if (!invincible) {
 			//healthCount -= damageToTake;
 
-			thePlayer.PlayerKilled ();
+			thePlayer.PlayerEnemyCollision ();
 			//thePlayer.HurtAudioSource.Play ();
 		}
 	}
